@@ -1,3 +1,9 @@
+# working version 1 using Selenium to open Chrome and 
+# send keys directly to the browser, which should be more 
+# reliable than PyAutoGUI for this purpose. 
+# The code opens Chrome, navigates to the Dino game, and sends space key 
+# presses to make the dinosaur jump.
+
 import time
 import pyautogui
 import webbrowser
