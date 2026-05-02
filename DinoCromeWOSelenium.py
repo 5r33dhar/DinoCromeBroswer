@@ -1,3 +1,5 @@
+# workig version 2This code not uses Selenium to open Google Chrome with a 
+# specific user profile and navigate to the Dino game.
 import webbrowser
 import pyautogui
 import time
