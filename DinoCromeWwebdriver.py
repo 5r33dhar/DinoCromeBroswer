@@ -1,3 +1,10 @@
+# This script uses Selenium to open the Chrome Dinosaur game and
+#  PyAutoGUI to simulate key presses.
+# It opens Chrome, navigates to the Dino game, and sends space key presses 
+# to make the dinosaur jump.
+# Note: Selenium cannot navigate to chrome://dino directly, 
+# so we use PyAutoGUI to type the URL and press Enter.
+
 import os
 import time
 import webbrowser
