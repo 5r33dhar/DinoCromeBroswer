@@ -1,0 +1,64 @@
+import pyautogui
+import time
+from PIL import ImageGrab
+import numpy as np
+import cv2  # You need to install this: pip install opencv-python
+import mss
+import keyboard
+
+# Define exactly what part of the screen to capture (cuts down on processing)
+# Monitor 1 is usually the main screen
+# Adjust top/left/width/height to frame your game window
+monitor = {"top": 0, "left": 0, "width": 1000, "height": 800}
+
+
+
+def takeScreenshot():
+    # Capture screen and convert to grayscale
+    img = ImageGrab.grab()
+    img_np = np.array(img) # Convert PIL to NumPy for OpenCV
+    img_gray = cv2.cvtColor(img_np, cv2.COLOR_BGR2GRAY)
+    return img_gray, img_np # Return both gray for logic and color for visual
+
+def CheckCollision(data_gray):
+    # mss returns images in a slightly different format, but indexing stays the same
+    # Sample background color in the sky area (700, 200) 
+    bg = data_gray[200, 700] 
+    
+    # Scan the detection zone (y1:y2, x1:x2) using NumPy slicing (MUCH faster than loops)
+    # This checks if ANY pixel in that box is different from the background
+    zone = gray_frame[290:380, 665:700]
+    if np.any(zone != bg):
+        return True
+    return False
+
+if __name__ == "__main__":
+    print("Starting... Switch to Dino game!")
+    time.sleep(3)
+    keyboard.press('space')
+
+    with mss.mss() as sct:
+        while True:
+            # 1. FAST CAPTURE
+            # sct.grab is nearly instant compared to ImageGrab
+            img = np.array(sct.grab(monitor))
+            
+            # 2. CONVERT
+            # mss captures in BGRA; convert to gray for logic
+            gray_frame = cv2.cvtColor(img, cv2.COLOR_BGRA2GRAY)
+            
+            # 3. LOGIC
+            if CheckCollision(gray_frame):
+                keyboard.press('space')
+                # No print statement here; printing slows down the loop!
+
+            # 4. LIVE VIEW (Optional - remove this to go even faster)
+            # Draw rectangles to see what's happening
+            cv2.rectangle(img, (665, 375), (700, 425), (0, 255, 0), 2)
+           
+            cv2.imshow("Fast Bot View", cv2.resize(img, (0,0), fx=0.5, fy=0.5))
+
+            if cv2.waitKey(1) & 0xFF == ord('q'):
+                break
+
+    cv2.destroyAllWindows()
